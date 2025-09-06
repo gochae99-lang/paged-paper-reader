@@ -23,11 +23,12 @@ body {
 
 st.title("📖 논문 리더기 (페이징)")
 
+# 세션 상태 초기화
 if 'texts' not in st.session_state:
     st.session_state.texts = []
 
 if 'page' not in st.session_state:
-    st.session_state.page = 0  # 현재 페이지
+    st.session_state.page = 0
 
 # 280자 단위 분할
 def split_by_chars(text, max_len=280):
@@ -80,14 +81,13 @@ if current_page_texts:
     for chunk in current_page_texts:
         st.markdown(f"> {chunk}")
     
-    col1, col2 = st.columns(2)
-    with col1:
-        if st.button("⬅ 이전"):
-            if st.session_state.page > 0:
-                st.session_state.page -= 1
-    with col2:
-        if st.button("다음 ➡"):
-            if end_idx < len(st.session_state.texts):
-                st.session_state.page += 1
-else:
-    st.info("PDF 또는 TXT 파일을 업로드하세요.")
+    # 버튼 콜백 정의
+    def next_page():
+        if (st.session_state.page + 1) * page_size < len(st.session_state.texts):
+            st.session_state.page += 1
+
+    def prev_page():
+        if st.session_state.page > 0:
+            st.session_state.page -= 1
+
+    col1, col2 = st.co
